@@ -16,6 +16,7 @@ let activeCategory = 'All pieces';
 let searchTerm = '';
 let savedOnly = false;
 let savedDesignIds = new Set();
+let savedReferences = [];
 let isStaff = false;
 let toastTimer;
 
@@ -163,10 +164,11 @@ async function showStudio(user) {
   document.querySelector('#studioView').hidden = false;
   const [staffResult, picksResult] = await Promise.all([
     supabase.from('fashion_staff').select('role').eq('user_id', user.id).maybeSingle(),
-    supabase.from('fashion_picks').select('design_id').eq('user_id', user.id)
+    supabase.from('fashion_picks').select('design_id, design_name, category, image_id, image_url, created_at').eq('user_id', user.id)
   ]);
   isStaff = Boolean(staffResult.data);
   savedDesignIds = new Set((picksResult.data ?? []).map(pick => pick.design_id));
+  savedReferences = (picksResult.data ?? []).filter(pick => pick.image_url);
   document.querySelector('#clientPicksNav').hidden = !isStaff;
   document.querySelector('#clientPicksView').hidden = true;
   document.querySelector('#browseView').hidden = false;
@@ -201,16 +203,22 @@ function renderDesigns() {
   const visible = designs.filter(item => (activeCategory === 'All pieces' || item.category === activeCategory)
     && (!savedOnly || savedDesignIds.has(item.id))
     && `${item.name} ${item.category} ${item.description} ${item.label}`.toLowerCase().includes(searchTerm));
-  document.querySelector('#resultCount').textContent = `${String(visible.length).padStart(2, '0')} ${savedOnly ? 'SAVED PIECES' : 'PIECES'}`;
+  const visibleReferences = savedOnly ? savedReferences.filter(item => `${item.design_name} ${item.category}`.toLowerCase().includes(searchTerm)) : [];
+  const totalVisible = visible.length + visibleReferences.length;
+  document.querySelector('#resultCount').textContent = `${String(totalVisible).padStart(2, '0')} ${savedOnly ? 'SAVED PIECES' : 'PIECES'}`;
   document.querySelector('#savedCount').textContent = savedDesignIds.size;
   document.querySelector('#designGrid').innerHTML = visible.map((item, index) => {
     const isSaved = savedDesignIds.has(item.id);
     const imageQuery = encodeURIComponent(`${item.name} ${item.category} Nigerian fashion`);
     return `<article class="design-card" style="animation-delay:${Math.min(index * 45, 330)}ms"><div class="design-image-wrap"><a class="design-image-link" href="https://www.google.com/search?tbm=isch&q=${imageQuery}" target="_blank" rel="noopener noreferrer" aria-label="View similar images for ${escapeHtml(item.name)} online"><img class="design-image" src="https://images.unsplash.com/${item.image}?auto=format&fit=crop&w=720&q=80" alt="${escapeHtml(item.name)} fashion inspiration" loading="lazy" /><span class="image-link-label">VIEW SIMILAR ↗</span></a><span class="design-number">NO. ${String(index + 1).padStart(2, '0')}</span><button class="save-button${isSaved ? ' saved' : ''}" type="button" data-save="${item.id}" aria-label="${isSaved ? 'Remove' : 'Save'} ${escapeHtml(item.name)}" aria-pressed="${isSaved}">${isSaved ? '♥' : '♡'}</button></div><div class="design-meta"><h3>${escapeHtml(item.name)}</h3><span>${escapeHtml(item.label)}</span></div><p class="design-description">${escapeHtml(item.description)}</p></article>`;
+  }).join('') + visibleReferences.map(item => {
+    const imageUrl = safeHttpsUrl(item.image_url);
+    return `<article class="design-card custom-reference-card"><div class="design-image-wrap"><a class="design-image-link" href="${escapeHtml(imageUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${escapeHtml(item.design_name)} reference image"><img class="design-image" src="${escapeHtml(imageUrl)}" alt="${escapeHtml(item.design_name)} reference" loading="lazy" /><span class="image-link-label">OPEN IMAGE ↗</span></a><span class="design-number">YOUR REFERENCE</span><button class="save-button saved" type="button" data-remove-reference="${escapeHtml(item.design_id)}" aria-label="Remove ${escapeHtml(item.design_name)} from your picks">♥</button></div><div class="design-meta"><h3>${escapeHtml(item.design_name)}</h3><span>YOUR IMAGE</span></div><p class="design-description">${escapeHtml(item.category)}</p></article>`;
   }).join('');
-  document.querySelector('#designGrid').hidden = visible.length === 0;
-  document.querySelector('#emptyState').hidden = visible.length !== 0;
+  document.querySelector('#designGrid').hidden = totalVisible === 0;
+  document.querySelector('#emptyState').hidden = totalVisible !== 0;
   document.querySelectorAll('[data-save]').forEach(button => button.addEventListener('click', () => toggleSaved(button.dataset.save)));
+  document.querySelectorAll('[data-remove-reference]').forEach(button => button.addEventListener('click', () => removeSavedReference(button.dataset.removeReference)));
 }
 async function toggleSaved(id) {
   const item = designs.find(design => design.id === id);
@@ -251,6 +259,95 @@ function escapeHtml(value) {
   })[character]);
 }
 
+function safeHttpsUrl(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && !url.username && !url.password ? url.href : '';
+  } catch {
+    return '';
+  }
+}
+
+function checkImageUrl(url) {
+  return new Promise(resolve => {
+    const image = new Image();
+    const timeout = setTimeout(() => resolve(false), 10000);
+    image.onload = () => { clearTimeout(timeout); resolve(true); };
+    image.onerror = () => { clearTimeout(timeout); resolve(false); };
+    image.src = url;
+  });
+}
+
+document.querySelector('#toggleReferenceForm').addEventListener('click', () => {
+  const form = document.querySelector('#referenceForm');
+  form.hidden = !form.hidden;
+  if (!form.hidden) document.querySelector('#referenceName').focus();
+});
+
+document.querySelector('#referenceForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const status = document.querySelector('#referenceStatus');
+  if (!form.reportValidity()) return;
+  const name = document.querySelector('#referenceName').value.trim();
+  const imageUrl = safeHttpsUrl(document.querySelector('#referenceUrl').value.trim());
+  if (!imageUrl) {
+    status.textContent = 'Enter a secure HTTPS image address.';
+    status.className = 'reference-status error';
+    return;
+  }
+  const submitButton = document.querySelector('#submitReference');
+  submitButton.disabled = true;
+  submitButton.firstElementChild.textContent = 'Checking image…';
+  status.textContent = '';
+  try {
+    if (!await checkImageUrl(imageUrl)) throw new Error('image_unavailable');
+    const designId = `custom-${globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`}`;
+    const customerName = activeUser.user_metadata?.full_name?.trim() || activeUser.email.split('@')[0];
+    const { data, error } = await supabase.from('fashion_picks').insert({
+      user_id: activeUser.id,
+      customer_email: activeUser.email.toLowerCase(),
+      customer_name: customerName,
+      design_id: designId,
+      design_name: name,
+      category: 'Customer reference',
+      image_id: 'custom',
+      image_url: imageUrl
+    }).select('design_id, design_name, category, image_id, image_url, created_at').single();
+    if (error) throw error;
+    savedDesignIds.add(designId);
+    savedReferences.push(data);
+    form.reset();
+    form.hidden = true;
+    showToast('Image reference saved and shared with the studio');
+    renderDesigns();
+  } catch (error) {
+    status.textContent = error.message === 'image_unavailable'
+      ? 'That address did not load as an image. Use the direct image address from its source.'
+      : error.code === 'PGRST204' || error.code === '42703'
+        ? 'The studio database needs the image_url update before custom references can be saved.'
+        : 'Could not save this reference. Please try again.';
+    status.className = 'reference-status error';
+  } finally {
+    submitButton.disabled = false;
+    submitButton.firstElementChild.textContent = 'Save reference';
+  }
+});
+
+async function removeSavedReference(designId) {
+  const { error } = await supabase.from('fashion_picks').delete()
+    .eq('user_id', activeUser.id)
+    .eq('design_id', designId);
+  if (error) {
+    showToast('Could not remove this reference. Please try again.');
+    return;
+  }
+  savedDesignIds.delete(designId);
+  savedReferences = savedReferences.filter(item => item.design_id !== designId);
+  renderDesigns();
+  showToast('Image reference removed from your picks');
+}
+
 async function loadClientPicks() {
   if (!isStaff) return;
   const state = document.querySelector('#clientPicksState');
@@ -258,7 +355,7 @@ async function loadClientPicks() {
   state.textContent = 'Loading customer picks…';
   grid.innerHTML = '';
   const { data, error } = await supabase.from('fashion_picks')
-    .select('id, customer_email, customer_name, design_name, category, image_id, created_at')
+    .select('id, customer_email, customer_name, design_name, category, image_id, image_url, created_at')
     .order('created_at', { ascending: false });
   if (error) {
     state.textContent = 'Could not load customer picks. Check the shared-picks setup and staff access.';
@@ -269,7 +366,10 @@ async function loadClientPicks() {
     return;
   }
   state.textContent = `${data.length} PICK${data.length === 1 ? '' : 'S'} FROM CUSTOMERS`;
-  grid.innerHTML = data.map(pick => `<article class="customer-pick"><img src="https://images.unsplash.com/${encodeURIComponent(pick.image_id)}?auto=format&fit=crop&w=520&q=75" alt="${escapeHtml(pick.design_name)}" loading="lazy" /><div class="customer-pick-details"><p class="eyebrow">${escapeHtml(pick.category)}</p><h3>${escapeHtml(pick.design_name)}</h3><p>${escapeHtml(pick.customer_name)}</p><a href="mailto:${encodeURIComponent(pick.customer_email)}">${escapeHtml(pick.customer_email)}</a><time datetime="${escapeHtml(pick.created_at)}">${new Date(pick.created_at).toLocaleDateString()}</time></div></article>`).join('');
+  grid.innerHTML = data.map(pick => {
+    const imageUrl = safeHttpsUrl(pick.image_url) || `https://images.unsplash.com/${encodeURIComponent(pick.image_id)}?auto=format&fit=crop&w=520&q=75`;
+    return `<article class="customer-pick"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(pick.design_name)}" loading="lazy" /><div class="customer-pick-details"><p class="eyebrow">${escapeHtml(pick.category)}</p><h3>${escapeHtml(pick.design_name)}</h3><p>${escapeHtml(pick.customer_name)}</p><a href="mailto:${encodeURIComponent(pick.customer_email)}">${escapeHtml(pick.customer_email)}</a><time datetime="${escapeHtml(pick.created_at)}">${new Date(pick.created_at).toLocaleDateString()}</time></div></article>`;
+  }).join('');
 }
 function showToast(message) {
   const toast = document.querySelector('#toast');
