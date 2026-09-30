@@ -17,7 +17,7 @@ let searchTerm = '';
 let savedOnly = false;
 let toastTimer;
 
-const categories = ['All pieces', 'Dresses', 'Sets', 'Tops', 'Evening'];
+const categories = ['All pieces', 'Dresses', 'Skirts', 'Sets', 'Tops', 'Traditional', 'Evening'];
 const designs = [
   ['look-01', 'The Sunday Dress', 'Dresses', 'Soft volume, a little romance.', 'photo-1566174053879-31528523f8ae', 'EASY ELEGANCE'],
   ['look-02', 'City in Bloom', 'Sets', 'A matching set that means business.', 'photo-1594633312681-425c7b97ccd1', 'TWO-PIECE'],
@@ -30,7 +30,21 @@ const designs = [
   ['look-09', 'Sunday in Lagos', 'Dresses', 'A little colour, a lot of character.', 'photo-1612722432474-b971cdcea546', "THE DEBBIE'S EDIT"],
   ['look-10', 'The Modern Muse', 'Sets', 'Your new favourite combination.', 'photo-1483985988355-763728e1935b', 'TWO-PIECE'],
   ['look-11', 'Golden Hour', 'Evening', 'Save this one for the celebration.', 'photo-1566174053879-31528523f8ae', 'OCCASION'],
-  ['look-12', 'Everyday, Elevated', 'Tops', 'The kind of top you reach for again.', 'photo-1551163943-3f6a855d1153', 'WARDROBE STAPLE']
+  ['look-12', 'Everyday, Elevated', 'Tops', 'The kind of top you reach for again.', 'photo-1551163943-3f6a855d1153', 'WARDROBE STAPLE'],
+  ['look-13', 'Ankara Party Gown', 'Dresses', 'A joyful print with a sweeping, made-to-measure skirt.', 'photo-1529139574466-a303027c1d8b', 'ANKARA EDIT'],
+  ['look-14', 'Aso-Ebi Mermaid Gown', 'Traditional', 'A sculpted celebration silhouette with room for your own fabric story.', 'photo-1539008835657-9e8e9680c956', 'CELEBRATION'],
+  ['look-15', 'Iro & Buba', 'Traditional', 'A graceful Yoruba two-piece with a flowing wrapper and relaxed buba.', 'photo-1525507119028-ed4c629a60a3', 'YORUBA CLASSIC'],
+  ['look-16', 'Ankara Circle Skirt', 'Skirts', 'Full, swishy volume that lets a bold print take the lead.', 'photo-1509631179647-0177331693ae', 'FULL SKIRT'],
+  ['look-17', 'Adire Wrap Skirt', 'Skirts', 'A relaxed wrap shape inspired by the beauty of indigo adire.', 'photo-1612722432474-b971cdcea546', 'ADIRE INSPIRATION'],
+  ['look-18', 'The High-Waist Pencil', 'Skirts', 'A clean fitted line for work days and dinner plans.', 'photo-1583496661160-fb5886a0aaaa', 'WARDROBE STAPLE'],
+  ['look-19', 'Aso-Oke Occasion Set', 'Traditional', 'A polished skirt-and-blouse pairing for a special gathering.', 'photo-1524504388940-b1c1722653e1', 'OCCASION SET'],
+  ['look-20', 'The Easy Boubou', 'Traditional', 'An airy, generous kaftan silhouette with beautiful movement.', 'photo-1534528741775-53994a69daeb', 'EASE & ELEGANCE'],
+  ['look-21', 'Peplum & Pencil', 'Sets', 'A defined peplum top paired with a simple fitted skirt.', 'photo-1515886657613-9f3515b0c78f', 'TWO-PIECE'],
+  ['look-22', 'Ankara Pleated Skirt', 'Skirts', 'Soft pleats bring movement to a favourite printed fabric.', 'photo-1523398002811-999ca8dec234', 'PRINT & PLEATS'],
+  ['look-23', 'Wrapper & Blouse Set', 'Traditional', 'A versatile blouse and wrapper pairing to style your way.', 'photo-1591047139829-d91aecb6caea', 'MADE YOUR WAY'],
+  ['look-24', 'Cape-Sleeve Reception Gown', 'Evening', 'A graceful sleeve detail for a memorable entrance.', 'photo-1566174053879-31528523f8ae', 'RECEPTION'],
+  ['look-25', 'The Ankara Midi', 'Dresses', 'An easy everyday dress with a little Lagos colour.', 'photo-1595777457583-95e059d581b8', 'EVERYDAY PRINT'],
+  ['look-26', 'Lagos After Dark', 'Evening', 'A confident evening silhouette, tailored to your occasion.', 'photo-1539109136881-3be0616acf4b', 'AFTER HOURS']
 ].map(([id, name, category, description, image, label]) => ({ id, name, category, description, image, label }));
 
 function savedKey() { return `debbiesFashionSaved:${activeUser.id}`; }
