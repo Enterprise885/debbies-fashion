@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f7f2ef" />
+  <meta name="description" content="Find your next sewing inspiration at Debbie's Fashion." />
+  <title>Debbie's Fashion | Your next sew</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main id="authView" class="auth-layout">
+    <section class="auth-image" aria-label="Fashion atelier">
+      <a class="brand brand-light" href="#"><span class="brand-symbol">D</span><span>debbie's <i>fashion</i></span></a>
+      <div class="auth-image-copy"><p class="eyebrow">MADE FOR YOUR NEXT CHAPTER</p><h1>Wear the<br />feeling.</h1><p>Ideas worth making.<br />Pieces made entirely your own.</p></div>
+      <span class="image-credit">THE STUDIO · LAGOS</span>
+    </section>
+    <section class="auth-side">
+      <div class="auth-top"><a class="brand" href="#"><span class="brand-symbol">D</span><span>debbie's <i>fashion</i></span></a><span>YOUR CREATIVE SPACE</span></div>
+      <div class="auth-content">
+        <p class="eyebrow" id="authEyebrow">WELCOME BACK</p>
+        <h2 id="authHeading">Good to see<br />you again.</h2>
+        <p class="auth-intro" id="authIntro">Sign in to find the piece you can't wait to make.</p>
+        <div class="auth-tabs" role="tablist" aria-label="Account access"><button id="loginTab" class="auth-tab selected" type="button" role="tab" aria-selected="true">Log in</button><button id="signupTab" class="auth-tab" type="button" role="tab" aria-selected="false">Create account</button></div>
+        <form id="authForm" novalidate>
+          <div id="nameGroup" hidden><label for="nameInput">Your name</label><input class="field" id="nameInput" type="text" autocomplete="name" placeholder="Your name" /></div>
+          <label for="emailInput">Email address</label><input class="field" id="emailInput" type="email" autocomplete="email" placeholder="you@example.com" required />
+          <label for="passwordInput">Password</label><div class="password-field"><input class="field" id="passwordInput" type="password" autocomplete="current-password" placeholder="At least 6 characters" minlength="6" required /><button id="passwordToggle" type="button" aria-label="Show password">Show</button></div>
+          <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
+          <button id="authSubmit" class="button button-dark auth-submit" type="submit" disabled><span>Log in to your studio</span><span>↗</span></button>
+        </form>
+        <p class="auth-legal">By continuing, you agree to our <a href="#terms">Terms</a> and <a href="#privacy">Privacy Policy</a>.</p>
+        <p class="security-note">Your account is securely managed by Supabase.</p>
+      </div>
+      <div class="auth-bottom"><span>CRAFTED WITH INTENTION</span><span>© DEBBIE'S FASHION 2026</span></div>
+    </section>
+  </main>
+
+  <main id="studioView" hidden>
+    <header class="site-header">
+      <a class="brand" href="#top"><span class="brand-symbol">D</span><span>debbie's <i>fashion</i></span></a>
+      <nav class="main-nav" aria-label="Main navigation"><a href="#discover" class="nav-link active" id="discoverNav">Discover</a><a href="#saved" class="nav-link" id="savedNav">My picks <span id="savedCount" class="count">0</span></a></nav>
+      <div class="header-actions"><a class="contact-link" href="https://wa.me/2349030943035?text=Hello%20Debbie's%20Fashion%2C%20I'd%20love%20to%20talk%20about%20a%20sewing%20design." target="_blank" rel="noopener noreferrer"><span></span>Let's talk</a><button id="profileButton" class="profile-button" type="button" aria-label="Account menu"><span id="profileInitial" class="profile-initial">D</span><span id="profileName">My studio</span><span>⌄</span></button><div id="profileMenu" class="profile-menu" hidden><span id="profileEmail"></span><button id="logoutButton" type="button">Log out <span>↗</span></button></div></div>
+    </header>
+    <div class="welcome-line"><span>YOUR STUDIO, YOUR RULES</span><span id="welcomeMessage">Welcome in</span></div>
+    <section id="top" class="hero">
+      <div class="hero-copy"><p class="eyebrow"><span class="rule"></span> THE DEBBIE'S EDIT · 001</p><h1>Good clothes<br />begin with <em>an idea.</em></h1><p>A little inspiration goes a long way. Find a silhouette, save what speaks to you, and let's make it yours.</p><a class="button button-dark" href="#discover"><span>Find your next sew</span><span>↓</span></a><div class="hero-footer"><span>CURATED FOR THE MAKERS</span><span>01 — 04</span></div></div>
+      <div class="hero-photo"><img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1300&q=85" alt="Model wearing an elegant contemporary outfit" /><div class="hero-caption"><span>THE NEW FEMININE</span><span>FIG. 01</span></div><span class="hero-stamp">MADE<br />BY YOU<br />✳</span></div>
+      <span class="side-caption">A WARDROBE WITH YOUR NAME ON IT</span>
+    </section>
+    <section id="discover" class="collection">
+      <div class="section-title"><div><p class="eyebrow">A FEW THINGS TO MAKE</p><h2>What are we <em>making?</em></h2></div><p>Not just something to wear.<br />Something that feels like you.</p></div>
+      <div class="toolbar"><div id="filters" class="filters" role="group" aria-label="Filter designs"></div><label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Find a silhouette" aria-label="Search designs" /><kbd>/</kbd></label></div>
+      <div id="saved" class="result-line"><span id="resultCount">12 PIECES</span><span>SELECT A PIECE TO SAVE IT TO YOUR STUDIO</span></div>
+      <div id="designGrid" class="design-grid"></div>
+      <div id="emptyState" class="empty-state" hidden><span>✳</span><h3>Nothing here just yet.</h3><p>Try another search or category. Your next idea is close.</p><button id="clearFilters" class="text-button" type="button">Clear filters ↗</button></div>
+    </section>
+    <section class="atelier"><div class="atelier-image"><img src="https://images.unsplash.com/photo-1590736969955-71cc94901144?auto=format&fit=crop&w=1100&q=85" alt="Dressmaking details in the atelier" loading="lazy" /></div><div class="atelier-copy"><p class="eyebrow">A GOOD IDEA, MADE REAL</p><h2>Bring your<br />inspiration.<br /><em>We'll bring the skill.</em></h2><p>Found a look you love? Tell us about the fabric, the fit, the occasion. We'll help you turn the picture in your head into something you can wear.</p><a class="button button-light" href="https://wa.me/2349030943035?text=Hello%20Debbie's%20Fashion%2C%20I'd%20like%20to%20discuss%20a%20custom%20design." target="_blank" rel="noopener noreferrer"><span>Talk to the studio</span><span>↗</span></a></div><span class="atelier-index">02<br /><small>/ 03</small></span></section>
+    <footer class="site-footer"><a class="brand" href="#top"><span class="brand-symbol">D</span><span>debbie's <i>fashion</i></span></a><span>MADE FOR THE WAY YOU MOVE.</span><a href="https://wa.me/2349030943035?text=Hello%20Debbie's%20Fashion" target="_blank" rel="noopener noreferrer">LAGOS, NIGERIA · WHATSAPP ↗</a><span>© 2026</span></footer>
+    <a class="whatsapp" href="https://wa.me/2349030943035?text=Hello%20Debbie's%20Fashion%2C%20I'd%20love%20to%20talk%20about%20a%20design." target="_blank" rel="noopener noreferrer" aria-label="Message Debbie's Fashion on WhatsApp"><span>✆</span>Message us</a>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </main>
+  <script src="supabase-config.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
