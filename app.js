@@ -46,7 +46,39 @@ const designs = [
   ['look-23', 'Wrapper & Blouse Set', 'Traditional', 'A versatile blouse and wrapper pairing to style your way.', 'photo-1591047139829-d91aecb6caea', 'MADE YOUR WAY'],
   ['look-24', 'Cape-Sleeve Reception Gown', 'Evening', 'A graceful sleeve detail for a memorable entrance.', 'photo-1566174053879-31528523f8ae', 'RECEPTION'],
   ['look-25', 'The Ankara Midi', 'Dresses', 'An easy everyday dress with a little Lagos colour.', 'photo-1595777457583-95e059d581b8', 'EVERYDAY PRINT'],
-  ['look-26', 'Lagos After Dark', 'Evening', 'A confident evening silhouette, tailored to your occasion.', 'photo-1539109136881-3be0616acf4b', 'AFTER HOURS']
+  ['look-26', 'Lagos After Dark', 'Evening', 'A confident evening silhouette, tailored to your occasion.', 'photo-1539109136881-3be0616acf4b', 'AFTER HOURS'],
+  ['look-27', 'Yoruba Oleku Set', 'Traditional', 'A Yoruba-inspired short-sleeve top and wrapper set for celebrations.', 'photo-1525507119028-ed4c629a60a3', 'YORUBA'],
+  ['look-28', 'Aso-Oke Iro and Buba', 'Traditional', 'A Yoruba occasion look pairing a woven aso-oke wrapper and buba.', 'photo-1524504388940-b1c1722653e1', 'YORUBA'],
+  ['look-29', 'Aso-Ebi Lace Gown', 'Dresses', 'A Nigerian celebration gown idea with lace, shaping, and a gele-ready neckline.', 'photo-1566174053879-31528523f8ae', 'CELEBRATION'],
+  ['look-30', 'Ankara Boubou Gown', 'Dresses', 'A flowing print gown with generous sleeves and relaxed movement.', 'photo-1539109136881-3be0616acf4b', 'WEST AFRICAN'],
+  ['look-31', 'Igbo George Wrapper Set', 'Traditional', 'An Igbo-inspired blouse and George wrapper for a special occasion.', 'photo-1612722432474-b971cdcea546', 'IGBO'],
+  ['look-32', 'Isi Agu Inspired Blouse', 'Tops', 'A contemporary blouse idea inspired by Igbo isi agu textile motifs.', 'photo-1551163943-3f6a855d1153', 'IGBO'],
+  ['look-33', 'Igbo Maiden Wrapper Look', 'Traditional', 'A celebratory Igbo wrapper and blouse concept with bead-inspired details.', 'photo-1523398002811-999ca8dec234', 'IGBO'],
+  ['look-34', 'Igbo Lace Occasion Gown', 'Dresses', 'A fitted lace gown concept for an Igbo wedding or family celebration.', 'photo-1595777457583-95e059d581b8', 'IGBO'],
+  ['look-35', 'Hausa Atamfa Wrapper Set', 'Traditional', 'A northern Nigerian atamfa wrapper and blouse pairing in rich colour.', 'photo-1529139574466-a303027c1d8b', 'HAUSA'],
+  ['look-36', 'Hausa Embroidered Kaftan', 'Dresses', 'A modest northern Nigerian kaftan with delicate neckline embroidery.', 'photo-1534528741775-53994a69daeb', 'HAUSA'],
+  ['look-37', 'Zani and Blouse Set', 'Traditional', 'A Hausa-inspired zani wrapper styled with a tailored blouse.', 'photo-1509631179647-0177331693ae', 'HAUSA'],
+  ['look-38', 'Northern Modest Maxi Gown', 'Dresses', 'A full-length modest gown idea with graceful sleeves and soft drape.', 'photo-1483985988355-763728e1935b', 'NORTHERN NIGERIA'],
+  ['look-39', 'Fulani Embroidered Gown', 'Dresses', 'A flowing gown idea with fine embroidery inspired by Fulani adornment.', 'photo-1539008835657-9e8e9680c956', 'FULANI'],
+  ['look-40', 'Fulani Indigo Wrapper Set', 'Traditional', 'A northern-inspired indigo wrapper and blouse with a comfortable fit.', 'photo-1612722432474-b971cdcea546', 'FULANI'],
+  ['look-41', 'Edo Coral Bead Gown', 'Dresses', 'A Benin-inspired ceremony gown styled with coral-bead details.', 'photo-1524504388940-b1c1722653e1', 'EDO / BENIN'],
+  ['look-42', 'Benin Royal Wrapper Set', 'Traditional', 'A rich Edo-inspired blouse and wrapper concept for a grand event.', 'photo-1525507119028-ed4c629a60a3', 'EDO / BENIN'],
+  ['look-43', 'Edo Beaded Blouse', 'Tops', 'A statement blouse idea inspired by Edo ceremonial beadwork.', 'photo-1551163943-3f6a855d1153', 'EDO / BENIN'],
+  ['look-44', 'Efik Onyonyo Dress', 'Dresses', 'An Efik-inspired occasion dress with a full skirt and decorative trim.', 'photo-1595777457583-95e059d581b8', 'EFIK'],
+  ['look-45', 'Ofod Ukod Anwang Set', 'Traditional', 'An Efik and Ibibio-inspired blouse, wrapper, and shoulder-cloth combination.', 'photo-1523398002811-999ca8dec234', 'EFIK / IBIBIO'],
+  ['look-46', "Tiv A'nger Stripe Dress", 'Dresses', 'A dress concept inspired by the distinctive black-and-white Tiv A’nger cloth.', 'photo-1566174053879-31528523f8ae', 'TIV'],
+  ['look-47', 'Tiv Woven Wrapper Skirt', 'Skirts', 'A woven-cloth-inspired skirt styled with a simple fitted blouse.', 'photo-1509631179647-0177331693ae', 'TIV'],
+  ['look-48', 'Idoma Red and Black Set', 'Traditional', 'An Idoma-inspired wrapper and blouse using a bold red-and-black palette.', 'photo-1529139574466-a303027c1d8b', 'IDOMA'],
+  ['look-49', 'Kalabari George Wrapper', 'Traditional', 'A Kalabari-inspired George wrapper and blouse for a ceremonial gathering.', 'photo-1524504388940-b1c1722653e1', 'IJAW / KALABARI'],
+  ['look-50', 'Ijaw Beaded Celebration Gown', 'Dresses', 'A Niger Delta-inspired gown with layered, bead-ready styling.', 'photo-1539109136881-3be0616acf4b', 'IJAW'],
+  ['look-51', 'Urhobo Blouse and Wrapper', 'Traditional', 'An Urhobo-inspired blouse and wrapper pairing with a polished silhouette.', 'photo-1525507119028-ed4c629a60a3', 'URHOBO'],
+  ['look-52', 'Isoko George Wrapper Skirt', 'Skirts', 'A statement wrapper skirt inspired by Isoko celebration dressing.', 'photo-1612722432474-b971cdcea546', 'ISOKO'],
+  ['look-53', 'Itsekiri Ceremonial Set', 'Traditional', 'An Itsekiri-inspired blouse and wrapper for a formal family occasion.', 'photo-1591047139829-d91aecb6caea', 'ITSEKIRI'],
+  ['look-54', 'Nupe Embroidered Kaftan', 'Dresses', 'A modest kaftan idea with embroidery inspired by Nupe craft traditions.', 'photo-1534528741775-53994a69daeb', 'NUPE'],
+  ['look-55', 'Igala Woven Wrapper Dress', 'Dresses', 'An Igala-inspired wrapper dress with a woven-textile accent.', 'photo-1595777457583-95e059d581b8', 'IGALA'],
+  ['look-56', 'Ebira Handwoven Skirt Set', 'Sets', 'A blouse and skirt concept inspired by Ebira woven cloth.', 'photo-1509631179647-0177331693ae', 'EBIRA'],
+  ['look-57', 'Gbagyi Woven Wrap Gown', 'Dresses', 'A contemporary wrap gown concept with a Gbagyi-inspired woven accent.', 'photo-1566174053879-31528523f8ae', 'GBAGYI'],
+  ['look-58', 'Kanuri Embroidered Modest Gown', 'Dresses', 'A full-length gown idea with embroidery and relaxed, modest tailoring.', 'photo-1483985988355-763728e1935b', 'KANURI']
 ].map(([id, name, category, description, image, label]) => ({ id, name, category, description, image, label }));
 
 function showMessage(message, kind = '') {
@@ -246,8 +278,16 @@ function showToast(message) {
   toastTimer = setTimeout(() => toast.classList.remove('visible'), 2200);
 }
 
+function updateOnlineImageSearch(query) {
+  const link = document.querySelector('#onlineImageSearch');
+  const cleanedQuery = query.trim();
+  link.hidden = cleanedQuery.length === 0;
+  link.href = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(`${cleanedQuery} Nigerian traditional dress fashion`)}`;
+}
+
 document.querySelector('#searchInput').addEventListener('input', event => {
   searchTerm = event.target.value.trim().toLowerCase();
+  updateOnlineImageSearch(event.target.value);
   renderDesigns();
 });
 document.querySelector('#clearFilters').addEventListener('click', () => {
@@ -255,6 +295,7 @@ document.querySelector('#clearFilters').addEventListener('click', () => {
   savedOnly = false;
   searchTerm = '';
   document.querySelector('#searchInput').value = '';
+  updateOnlineImageSearch('');
   document.querySelector('#discoverNav').classList.add('active');
   document.querySelector('#savedNav').classList.remove('active');
   renderFilters();
