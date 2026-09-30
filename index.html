@@ -42,10 +42,11 @@
   <main id="studioView" hidden>
     <header class="site-header">
       <a class="brand" href="#top"><span class="brand-symbol">D</span><span>debbie's <i>fashion</i></span></a>
-      <nav class="main-nav" aria-label="Main navigation"><a href="#discover" class="nav-link active" id="discoverNav">Discover</a><a href="#saved" class="nav-link" id="savedNav">My picks <span id="savedCount" class="count">0</span></a></nav>
+      <nav class="main-nav" aria-label="Main navigation"><a href="#discover" class="nav-link active" id="discoverNav">Discover</a><a href="#saved" class="nav-link" id="savedNav">My picks <span id="savedCount" class="count">0</span></a><a href="#client-picks" class="nav-link" id="clientPicksNav" hidden>Client picks</a></nav>
       <div class="header-actions"><a class="contact-link" href="https://wa.me/2349030943035?text=Hello%20Debbie's%20Fashion%2C%20I'd%20love%20to%20talk%20about%20a%20sewing%20design." target="_blank" rel="noopener noreferrer"><span></span>Let's talk</a><button id="profileButton" class="profile-button" type="button" aria-label="Account menu"><span id="profileInitial" class="profile-initial">D</span><span id="profileName">My studio</span><span>⌄</span></button><div id="profileMenu" class="profile-menu" hidden><span id="profileEmail"></span><button id="logoutButton" type="button">Log out <span>↗</span></button></div></div>
     </header>
     <div class="welcome-line"><span>YOUR STUDIO, YOUR RULES</span><span id="welcomeMessage">Welcome in</span></div>
+    <div id="browseView">
     <section id="top" class="hero">
       <div class="hero-copy"><p class="eyebrow"><span class="rule"></span> THE DEBBIE'S EDIT · 001</p><h1>Good clothes<br />begin with <em>an idea.</em></h1><p>A little inspiration goes a long way. Find a silhouette, save what speaks to you, and let's make it yours.</p><a class="button button-dark" href="#discover"><span>Find your next sew</span><span>↓</span></a><div class="hero-footer"><span>CURATED FOR THE MAKERS</span><span>01 — 04</span></div></div>
       <div class="hero-photo"><img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1300&q=85" alt="Model wearing an elegant contemporary outfit" /><div class="hero-caption"><span>THE NEW FEMININE</span><span>FIG. 01</span></div><span class="hero-stamp">MADE<br />BY YOU<br />✳</span></div>
@@ -57,6 +58,12 @@
       <div id="saved" class="result-line"><span id="resultCount">12 PIECES</span><span>SELECT A PIECE TO SAVE IT TO YOUR STUDIO</span></div>
       <div id="designGrid" class="design-grid"></div>
       <div id="emptyState" class="empty-state" hidden><span>✳</span><h3>Nothing here just yet.</h3><p>Try another search or category. Your next idea is close.</p><button id="clearFilters" class="text-button" type="button">Clear filters ↗</button></div>
+    </section>
+    </div>
+    <section id="clientPicksView" class="client-picks" hidden>
+      <div class="client-picks-heading"><div><p class="eyebrow">STUDIO INBOX</p><h2>Customer <em>picks.</em></h2><p>Saved inspiration from people planning their next made-to-measure piece.</p></div><button id="refreshClientPicks" class="button button-dark" type="button"><span>Refresh picks</span><span>↻</span></button></div>
+      <p id="clientPicksState" class="client-picks-state" role="status" aria-live="polite">Customer picks will appear here.</p>
+      <div id="clientPicksGrid" class="client-picks-grid"></div>
     </section>
     <section class="atelier"><div class="atelier-image"><img src="https://images.unsplash.com/photo-1590736969955-71cc94901144?auto=format&fit=crop&w=1100&q=85" alt="Dressmaking details in the atelier" loading="lazy" /></div><div class="atelier-copy"><p class="eyebrow">A GOOD IDEA, MADE REAL</p><h2>Bring your<br />inspiration.<br /><em>We'll bring the skill.</em></h2><p>Found a look you love? Tell us about the fabric, the fit, the occasion. We'll help you turn the picture in your head into something you can wear.</p><a class="button button-light" href="https://wa.me/2349030943035?text=Hello%20Debbie's%20Fashion%2C%20I'd%20like%20to%20discuss%20a%20custom%20design." target="_blank" rel="noopener noreferrer"><span>Talk to the studio</span><span>↗</span></a></div><span class="atelier-index">02<br /><small>/ 03</small></span></section>
     <footer class="site-footer"><a class="brand" href="#top"><span class="brand-symbol">D</span><span>debbie's <i>fashion</i></span></a><span>MADE FOR THE WAY YOU MOVE.</span><a href="https://wa.me/2349030943035?text=Hello%20Debbie's%20Fashion" target="_blank" rel="noopener noreferrer">LAGOS, NIGERIA · WHATSAPP ↗</a><span>© 2026</span></footer>

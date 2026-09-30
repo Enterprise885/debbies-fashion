@@ -15,6 +15,8 @@ let activeUser;
 let activeCategory = 'All pieces';
 let searchTerm = '';
 let savedOnly = false;
+let savedDesignIds = new Set();
+let isStaff = false;
 let toastTimer;
 
 const categories = ['All pieces', 'Dresses', 'Skirts', 'Sets', 'Tops', 'Traditional', 'Evening'];
@@ -47,10 +49,6 @@ const designs = [
   ['look-26', 'Lagos After Dark', 'Evening', 'A confident evening silhouette, tailored to your occasion.', 'photo-1539109136881-3be0616acf4b', 'AFTER HOURS']
 ].map(([id, name, category, description, image, label]) => ({ id, name, category, description, image, label }));
 
-function savedKey() { return `debbiesFashionSaved:${activeUser.id}`; }
-function readSaved() {
-  try { return JSON.parse(localStorage.getItem(savedKey())) ?? []; } catch { return []; }
-}
 function showMessage(message, kind = '') {
   authMessage.textContent = message;
   authMessage.className = `auth-message ${kind}`;
@@ -131,6 +129,16 @@ async function showStudio(user) {
   document.querySelector('#profileEmail').textContent = user.email;
   document.querySelector('#authView').hidden = true;
   document.querySelector('#studioView').hidden = false;
+  const [staffResult, picksResult] = await Promise.all([
+    supabase.from('fashion_staff').select('role').eq('user_id', user.id).maybeSingle(),
+    supabase.from('fashion_picks').select('design_id').eq('user_id', user.id)
+  ]);
+  isStaff = Boolean(staffResult.data);
+  savedDesignIds = new Set((picksResult.data ?? []).map(pick => pick.design_id));
+  document.querySelector('#clientPicksNav').hidden = !isStaff;
+  document.querySelector('#clientPicksView').hidden = true;
+  document.querySelector('#browseView').hidden = false;
+  if (picksResult.error) showToast('Could not load your saved picks. Please refresh and try again.');
   renderFilters();
   renderDesigns();
 }
@@ -158,33 +166,77 @@ function renderFilters() {
 }
 function renderDesigns() {
   if (!activeUser) return;
-  const saved = readSaved();
   const visible = designs.filter(item => (activeCategory === 'All pieces' || item.category === activeCategory)
-    && (!savedOnly || saved.includes(item.id))
+    && (!savedOnly || savedDesignIds.has(item.id))
     && `${item.name} ${item.category} ${item.description} ${item.label}`.toLowerCase().includes(searchTerm));
   document.querySelector('#resultCount').textContent = `${String(visible.length).padStart(2, '0')} ${savedOnly ? 'SAVED PIECES' : 'PIECES'}`;
-  document.querySelector('#savedCount').textContent = saved.length;
+  document.querySelector('#savedCount').textContent = savedDesignIds.size;
   document.querySelector('#designGrid').innerHTML = visible.map((item, index) => {
-    const isSaved = saved.includes(item.id);
+    const isSaved = savedDesignIds.has(item.id);
     return `<article class="design-card" style="animation-delay:${Math.min(index * 45, 330)}ms"><div class="design-image-wrap"><img class="design-image" src="https://images.unsplash.com/${item.image}?auto=format&fit=crop&w=720&q=80" alt="${item.name} fashion inspiration" loading="lazy" /><span class="design-number">NO. ${String(index + 1).padStart(2, '0')}</span><button class="save-button${isSaved ? ' saved' : ''}" type="button" data-save="${item.id}" aria-label="${isSaved ? 'Remove' : 'Save'} ${item.name}" aria-pressed="${isSaved}">${isSaved ? '♥' : '♡'}</button></div><div class="design-meta"><h3>${item.name}</h3><span>${item.label}</span></div><p class="design-description">${item.description}</p></article>`;
   }).join('');
   document.querySelector('#designGrid').hidden = visible.length === 0;
   document.querySelector('#emptyState').hidden = visible.length !== 0;
   document.querySelectorAll('[data-save]').forEach(button => button.addEventListener('click', () => toggleSaved(button.dataset.save)));
 }
-function toggleSaved(id) {
-  const saved = readSaved();
-  const index = saved.indexOf(id);
+async function toggleSaved(id) {
   const item = designs.find(design => design.id === id);
-  if (index < 0) {
-    saved.push(id);
-    showToast(`${item.name} saved to your picks`);
-  } else {
-    saved.splice(index, 1);
-    showToast(`${item.name} removed from your picks`);
+  try {
+    if (savedDesignIds.has(id)) {
+      const { error } = await supabase.from('fashion_picks')
+        .delete()
+        .eq('user_id', activeUser.id)
+        .eq('design_id', id);
+      if (error) throw error;
+      savedDesignIds.delete(id);
+      showToast(`${item.name} removed from your picks`);
+    } else {
+      const { error } = await supabase.from('fashion_picks').insert({
+        user_id: activeUser.id,
+        customer_email: activeUser.email.toLowerCase(),
+        customer_name: activeUser.user_metadata?.full_name?.trim() || activeUser.email.split('@')[0],
+        design_id: item.id,
+        design_name: item.name,
+        category: item.category,
+        image_id: item.image
+      });
+      if (error) throw error;
+      savedDesignIds.add(id);
+      showToast(`${item.name} saved and shared with the studio`);
+    }
+    renderDesigns();
+  } catch (error) {
+    showToast(error.code === '42P01' || error.code === 'PGRST205'
+      ? 'Shared picks are not set up yet. Ask the studio owner to run the Supabase picks setup.'
+      : 'Could not sync this pick. Please try again.');
   }
-  localStorage.setItem(savedKey(), JSON.stringify(saved));
-  renderDesigns();
+}
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, character => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[character]);
+}
+
+async function loadClientPicks() {
+  if (!isStaff) return;
+  const state = document.querySelector('#clientPicksState');
+  const grid = document.querySelector('#clientPicksGrid');
+  state.textContent = 'Loading customer picks…';
+  grid.innerHTML = '';
+  const { data, error } = await supabase.from('fashion_picks')
+    .select('id, customer_email, customer_name, design_name, category, image_id, created_at')
+    .order('created_at', { ascending: false });
+  if (error) {
+    state.textContent = 'Could not load customer picks. Check the shared-picks setup and staff access.';
+    return;
+  }
+  if (!data.length) {
+    state.textContent = 'No customer picks yet. Saved designs will appear here.';
+    return;
+  }
+  state.textContent = `${data.length} PICK${data.length === 1 ? '' : 'S'} FROM CUSTOMERS`;
+  grid.innerHTML = data.map(pick => `<article class="customer-pick"><img src="https://images.unsplash.com/${encodeURIComponent(pick.image_id)}?auto=format&fit=crop&w=520&q=75" alt="${escapeHtml(pick.design_name)}" loading="lazy" /><div class="customer-pick-details"><p class="eyebrow">${escapeHtml(pick.category)}</p><h3>${escapeHtml(pick.design_name)}</h3><p>${escapeHtml(pick.customer_name)}</p><a href="mailto:${encodeURIComponent(pick.customer_email)}">${escapeHtml(pick.customer_email)}</a><time datetime="${escapeHtml(pick.created_at)}">${new Date(pick.created_at).toLocaleDateString()}</time></div></article>`).join('');
 }
 function showToast(message) {
   const toast = document.querySelector('#toast');
@@ -210,19 +262,36 @@ document.querySelector('#clearFilters').addEventListener('click', () => {
 });
 document.querySelector('#discoverNav').addEventListener('click', () => {
   savedOnly = false;
+  document.querySelector('#browseView').hidden = false;
+  document.querySelector('#clientPicksView').hidden = true;
   document.querySelector('#discoverNav').classList.add('active');
   document.querySelector('#savedNav').classList.remove('active');
+  document.querySelector('#clientPicksNav').classList.remove('active');
   renderFilters();
   renderDesigns();
 });
 document.querySelector('#savedNav').addEventListener('click', () => {
   savedOnly = true;
   activeCategory = 'All pieces';
+  document.querySelector('#browseView').hidden = false;
+  document.querySelector('#clientPicksView').hidden = true;
   document.querySelector('#savedNav').classList.add('active');
   document.querySelector('#discoverNav').classList.remove('active');
+  document.querySelector('#clientPicksNav').classList.remove('active');
   renderFilters();
   renderDesigns();
 });
+document.querySelector('#clientPicksNav').addEventListener('click', event => {
+  event.preventDefault();
+  if (!isStaff) return;
+  document.querySelector('#browseView').hidden = true;
+  document.querySelector('#clientPicksView').hidden = false;
+  document.querySelector('#discoverNav').classList.remove('active');
+  document.querySelector('#savedNav').classList.remove('active');
+  event.currentTarget.classList.add('active');
+  loadClientPicks();
+});
+document.querySelector('#refreshClientPicks').addEventListener('click', loadClientPicks);
 document.addEventListener('keydown', event => {
   if (event.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
     event.preventDefault();
